@@ -1,3 +1,4 @@
+#rankall.R
 
 rankall <- function(outcome, num = "best") {
   
@@ -14,6 +15,7 @@ rankall <- function(outcome, num = "best") {
   df2 <- df[, c(2, 7, 11, 17, 23)]
   outcome_index <- numeric()
   
+  #create a column selector for subsetting
   if (outcome == "heart attack") { 
     outcome_index <- 3
   } else if (outcome == "heart failure") {
@@ -29,7 +31,7 @@ rankall <- function(outcome, num = "best") {
   df3 <- df3[order(df3$State, df3$Outcome, df3$Hospital), ]
   df4 <- df3[complete.cases(df3),]
   
-  
+  #create a function to pass into lapply, to be used for row selection dependent on user input for num
   lafunc <- function(df) {
     if (num == "best") {
       df[1, ]
@@ -40,9 +42,13 @@ rankall <- function(outcome, num = "best") {
     }
   } 
   
+  #split the sorted dataframe by state
   list1 <- split(df4, df4$State)
+  
+  #apply the lafunc function, and transpose the matrix
   list2 <- t(sapply(list1, lafunc))
   
+  #return list2
   return(list2)
   
 }
